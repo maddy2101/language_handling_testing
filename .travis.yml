@@ -16,8 +16,6 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
-  # update composer
-  - sudo composer self-update
   # Install ddev
   - curl -L https://raw.githubusercontent.com/drud/ddev/master/scripts/install_ddev.sh | bash
 
