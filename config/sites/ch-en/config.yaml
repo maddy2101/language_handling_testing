@@ -1,0 +1,32 @@
+rootPageId: 9
+base: ch-en
+baseVariants: {  }
+languages:
+  -
+    title: English
+    enabled: true
+    languageId: '0'
+    base: /en/
+    typo3Language: default
+    locale: en_US.UTF-8
+    iso-639-1: de
+    navigationTitle: ''
+    hreflang: ''
+    direction: ''
+    flag: en-us-gb
+  -
+    title: 'Swiss German'
+    enabled: true
+    languageId: '2'
+    base: /de-ch/
+    typo3Language: default
+    locale: de_CH.UTF-8
+    iso-639-1: de
+    navigationTitle: ''
+    hreflang: ''
+    direction: ''
+    fallbackType: fallback
+    fallbacks: '0'
+    flag: ch
+errorHandling: {  }
+routes: {  }
