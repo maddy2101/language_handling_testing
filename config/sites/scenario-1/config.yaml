@@ -1,5 +1,5 @@
 rootPageId: 1
-base: ch-de-en
+base: /scenario-1/
 baseVariants: {  }
 languages:
   -
@@ -10,8 +10,8 @@ languages:
     typo3Language: default
     locale: en_US.UTF-8
     iso-639-1: en
-    navigationTitle: ''
-    hreflang: ''
+    navigationTitle: English
+    hreflang: en-US
     direction: ''
     flag: en-us-gb
   -
@@ -19,14 +19,13 @@ languages:
     enabled: true
     languageId: '1'
     base: /de/
-    typo3Language: default
+    typo3Language: de
     locale: de_DE.UTF-8
     iso-639-1: de
-    navigationTitle: ''
-    hreflang: ''
+    navigationTitle: German
+    hreflang: de-DE
     direction: ''
-    fallbackType: fallback
-    fallbacks: '0'
+    fallbackType: strict
     flag: de
   -
     title: 'Swiss German'
@@ -36,11 +35,11 @@ languages:
     typo3Language: de
     locale: de_CH.UTF-8
     iso-639-1: de
-    navigationTitle: ''
-    hreflang: ''
+    navigationTitle: 'Swiss German'
+    hreflang: de-CH
     direction: ''
     fallbackType: fallback
-    fallbacks: '1,0'
+    fallbacks: '1'
     flag: ch
 errorHandling: {  }
 routes: {  }
