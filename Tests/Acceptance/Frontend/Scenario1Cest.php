@@ -17,19 +17,30 @@ namespace T3G\LanguageHandlingTesting\Tests\Acceptance\Frontend;
 
 use T3G\LanguageHandlingTesting\Tests\Acceptance\Support\AcceptanceTester;
 
-/**
- * Tests clicking through some frontend pages
- */
-class FrontendPagesCest
+
+class Scenario1Cest
 {
     /**
      * @param AcceptanceTester $I
      */
-    public function firstPageIsRendered(AcceptanceTester $I)
+    public function homePageIsRenderedInDefaultLanguage(AcceptanceTester $I)
     {
-        $I->amOnPage('/');
-        $I->see('[1] DE_CH > DE_DE > EN');
-        $I->click('Sub 1');
-        $I->see('[2] Sub 1');
+        $I->amOnPage('/scenario-1/en/');
+        $I->seeInTitle('Scenario 1');
+        $I->see('Page', 'li a');
+        $I->click('Page');
+        $I->seeInTitle('Page');
+    }
+
+    /**
+     * @param AcceptanceTester $I
+     */
+    public function homePageIsRenderedInFirstLanguageWherePageTranslationExists(AcceptanceTester $I)
+    {
+        $I->amOnPage('/scenario-1/de/');
+        $I->seeInTitle('Deutsch Scenario 1');
+        $I->see('Seite', 'li a');
+        $I->click('Seite');
+        $I->seeInTitle('Seite');
     }
 }
