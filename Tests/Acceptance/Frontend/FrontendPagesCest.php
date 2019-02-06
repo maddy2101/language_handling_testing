@@ -15,7 +15,7 @@ namespace T3G\LanguageHandlingTesting\Tests\Acceptance\Frontend;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Bk2k\SiteIntroduction\Tests\Acceptance\Support\AcceptanceTester;
+use T3G\LanguageHandlingTesting\Tests\Acceptance\Support\AcceptanceTester;
 
 /**
  * Tests clicking through some frontend pages

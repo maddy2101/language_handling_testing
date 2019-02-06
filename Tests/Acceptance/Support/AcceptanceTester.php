@@ -15,7 +15,7 @@ namespace T3G\LanguageHandlingTesting\Tests\Acceptance\Support;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Bk2k\SiteIntroduction\Tests\Acceptance\Support\_generated\AcceptanceTesterActions;
+use T3G\LanguageHandlingTesting\Tests\Acceptance\Support\_generated\AcceptanceTesterActions;
 
 /**
  * Default acceptance tester
