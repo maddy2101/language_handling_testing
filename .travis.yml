@@ -21,8 +21,10 @@ before_install:
 
 script:
   - >
-    echo "Running acceptance tests";
+    echo "Starting ddev...";
+    ddev config global --instrumentation-opt-in=false
     ddev start;
     ddev import-db --src=./data/db.sql;
     ddev import-files --src=./assets;
+    echo "Running acceptance tests";
     ddev exec ../bin/codecept run acceptance -d -c ../Tests/codeception.yml
