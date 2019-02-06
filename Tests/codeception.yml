@@ -7,9 +7,9 @@ suites:
       enabled:
         - Asserts
         - WebDriver:
-            url: http://introduction.ddev.local
+            url: http://language-handling-testing.ddev.local
             browser: chrome
-            host: ddev-introduction-chrome
+            host: ddev-language-handling-testing-chrome
             wait: 1
             window_size: 1280x1024
 extensions:
