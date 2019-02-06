@@ -43,4 +43,13 @@ class Scenario1Cest
         $I->click('Seite');
         $I->seeInTitle('Seite');
     }
+
+    /**
+     * @param AcceptanceTester $I
+     */
+    public function pageIsRenderedInSecondLanguageWherePageTranslationDoesNotExists(AcceptanceTester $I)
+    {
+        $I->amOnPage('/scenario-1/de-ch/');
+        $I->seeInTitle('Deutsch Scenario 1');
+    }
 }
