@@ -40,7 +40,7 @@ within the container without the need to log into it.
 The ddev setup comes with a selenium-chrome container, codeception and some
 acceptance tests ready to run.
 
-* Run tests: ddev exec bin/codecept run acceptance -d -c Tests/codeception.yml
+* Run tests: `ddev exec bin/codecept run acceptance -d -c Tests/codeception.yml`
 
 # Environment Variables
 

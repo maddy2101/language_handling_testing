@@ -1,4 +1,4 @@
-namespace: Bk2k\SiteIntroduction\Tests\Acceptance\Support
+namespace: T3G\LanguageHandlingTesting\Tests\Acceptance\Support
 suites:
   acceptance:
     actor: AcceptanceTester

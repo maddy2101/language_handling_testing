@@ -13,11 +13,11 @@ before_install:
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
   # Update docker-compose
   - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   # Install ddev
-  - curl -L https://raw.githubusercontent.com/drud/ddev/master/install_ddev.sh | sudo bash
+  - curl -L https://raw.githubusercontent.com/drud/ddev/master/scripts/install_ddev.sh | bash
 
 script:
   - >
