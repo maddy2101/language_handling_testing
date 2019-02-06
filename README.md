@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/maddy2101/language_handling_testing.svg?branch=master)](https://travis-ci.org/maddy2101/language_handling_testing)
+
 # DDEV Setup
 
 To use this repository we recommend to use ddev as environment. Please download
