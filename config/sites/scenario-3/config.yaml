@@ -1,0 +1,45 @@
+rootPageId: 8
+base: /scenario-3/
+baseVariants: {  }
+languages:
+  -
+    title: English
+    enabled: true
+    languageId: '0'
+    base: /en/
+    typo3Language: default
+    locale: en_US.UTF-8
+    iso-639-1: en
+    navigationTitle: English
+    hreflang: en-US
+    direction: ''
+    flag: en-us-gb
+  -
+    title: German
+    enabled: true
+    languageId: '1'
+    base: /de/
+    typo3Language: de
+    locale: de_DE.UTF-8
+    iso-639-1: de
+    navigationTitle: German
+    hreflang: de-DE
+    direction: ''
+    fallbackType: strict
+    flag: de
+  -
+    title: 'Swiss German'
+    enabled: true
+    languageId: '2'
+    base: /de-ch/
+    typo3Language: de
+    locale: de_CH.UTF-8
+    iso-639-1: de
+    navigationTitle: 'Swiss German'
+    hreflang: de-CH
+    direction: ''
+    fallbackType: fallback
+    fallbacks: '1'
+    flag: ch
+errorHandling: {  }
+routes: {  }
