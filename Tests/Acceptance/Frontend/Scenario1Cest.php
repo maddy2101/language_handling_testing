@@ -22,6 +22,9 @@ class Scenario1Cest
 {
     /**
      * @param AcceptanceTester $I
+     *
+     * default language page and content are available
+     * expectation: page and content are displayed as is
      */
     public function homePageIsRenderedInDefaultLanguage(AcceptanceTester $I)
     {
@@ -34,6 +37,11 @@ class Scenario1Cest
 
     /**
      * @param AcceptanceTester $I
+     *
+     * first language has no language fallback defined in site configuration
+     * page is translated into first language
+     * expectation: page is displayed in first language
+     *
      */
     public function homePageIsRenderedInFirstLanguageWherePageTranslationExists(AcceptanceTester $I)
     {
@@ -46,6 +54,12 @@ class Scenario1Cest
 
     /**
      * @param AcceptanceTester $I
+     *
+     * second language has fallback chain defined in site configuration as follows
+     * * only step is first language
+     * page is translated into first language
+     * page is not translated into second language
+     * expectation: page is displayed in first language
      */
     public function homePageIsRenderedInSecondLanguageWherePageTranslationDoesNotExist(AcceptanceTester $I)
     {
