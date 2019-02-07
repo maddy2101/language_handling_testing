@@ -38,7 +38,8 @@ class Scenario2Cest
     public function homePageIsNotRenderedInFirstLanguageWherePageTranslationDoesNotExist(AcceptanceTester $I)
     {
         $I->amOnPage('/scenario-2/de/');
-        $I->seeInTitle('Page Not Found (404)');
+        $I->seeInTitle('TYPO3 Exception');
+        $I->see('(1/1) #1518472189 TYPO3\CMS\Core\Error\Http\PageNotFoundException');
     }
 
     /**
