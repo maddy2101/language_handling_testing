@@ -24,15 +24,20 @@ class Scenario4Cest
      * @param AcceptanceTester $I
      *
      * default language page and content are available
+     * first page is available in default language
+     * second page is available in default language
      * expectation: page and content are displayed as is
      */
     public function homePageIsRenderedInDefaultLanguage(AcceptanceTester $I)
     {
         $I->amOnPage('/scenario-4/en/');
         $I->seeInTitle('Scenario 4');
-        $I->see('Page', 'li a');
-        $I->click('Page');
-        $I->seeInTitle('Page');
+        $I->see('first Page', 'li a');
+        $I->see('second Page', 'li a');
+        $I->click('first Page');
+        $I->seeInTitle('first Page');
+        $I->see('first Page', 'li a');
+        $I->see('second Page', 'li a');
     }
 
     /**
@@ -56,11 +61,13 @@ class Scenario4Cest
      * second language has fallback chain defined in site configuration as follows
      * * first step is first language
      * * second step is default language
-     * page is not translated into second language
-     * page is not translated into first language
-     * page is available in default language
-     * page has l18n_cfg=2 set
-     * expectation: page and content from default language are displayed
+     *
+     * home page is available in default language
+     * home page is not translated into first language
+     * home page is not translated into second language
+     * home page has l18n_cfg=2 set
+     *
+     * expectation: 404 Page not found error
      */
     public function homePageIsNotRenderedInSecondLanguageWherePageTranslationDoesNotExist(AcceptanceTester $I)
     {
@@ -78,14 +85,13 @@ class Scenario4Cest
      * page is not translated into first language
      * page is not translated into second language
      * page in menu has l18n_cfg=2 set and is not translated into second language
-     * expectation: page in menu with l18n_cfg=2 set does not appear in menu but page renders content of default language
+     * expectation: page in menu with l18n_cfg=2 set does not appear in menu but page is displayed in default language
      */
     public function subPageIsRenderedInSecondLanguageWherePageTranslationDoesNotExistAndNotTranslatedPageIsNotInMenu(AcceptanceTester $I)
     {
-        $I->amOnPage('/scenario-4/de-ch/page-2');
-        $I->seeInTitle('Page 2');
-        $I->dontSee('Page', 'li a');
-        $I->see('Page 2', 'li a');
-        $I->see('[19] Header', 'h2');
+        $I->amOnPage('/scenario-4/de-ch/second-page');
+        $I->seeInTitle('second Page');
+        $I->dontSee('first Page', 'li a');
+        $I->see('second Page', 'li a');
     }
 }
