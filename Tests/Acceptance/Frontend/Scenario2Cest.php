@@ -18,15 +18,15 @@ namespace T3G\LanguageHandlingTesting\Tests\Acceptance\Frontend;
 use T3G\LanguageHandlingTesting\Tests\Acceptance\Support\AcceptanceTester;
 
 
-class Scenario1Cest
+class Scenario2Cest
 {
     /**
      * @param AcceptanceTester $I
      */
     public function homePageIsRenderedInDefaultLanguage(AcceptanceTester $I)
     {
-        $I->amOnPage('/scenario-1/en/');
-        $I->seeInTitle('Scenario 1');
+        $I->amOnPage('/scenario-2/en/');
+        $I->seeInTitle('Scenario 2');
         $I->see('Page', 'li a');
         $I->click('Page');
         $I->seeInTitle('Page');
@@ -35,13 +35,10 @@ class Scenario1Cest
     /**
      * @param AcceptanceTester $I
      */
-    public function homePageIsRenderedInFirstLanguageWherePageTranslationExists(AcceptanceTester $I)
+    public function homePageIsNotRenderedInFirstLanguageWherePageTranslationDoesNotExist(AcceptanceTester $I)
     {
-        $I->amOnPage('/scenario-1/de/');
-        $I->seeInTitle('Deutsch Scenario 1');
-        $I->see('Seite', 'li a');
-        $I->click('Seite');
-        $I->seeInTitle('Seite');
+        $I->amOnPage('/scenario-2/de/');
+        $I->seeInTitle('Page Not Found (404)');
     }
 
     /**
@@ -49,7 +46,7 @@ class Scenario1Cest
      */
     public function homePageIsRenderedInSecondLanguageWherePageTranslationDoesNotExist(AcceptanceTester $I)
     {
-        $I->amOnPage('/scenario-1/de-ch/');
-        $I->seeInTitle('Deutsch Scenario 1');
+        $I->amOnPage('/scenario-2/de-ch/');
+        $I->seeInTitle('Scenario 2');
     }
 }
