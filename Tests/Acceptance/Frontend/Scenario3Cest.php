@@ -30,26 +30,31 @@ class Scenario3Cest
     {
         $I->amOnPage('/scenario-3/en/');
         $I->seeInTitle('Scenario 3');
-        $I->see('Page', 'li a');
-        $I->click('Page');
-        $I->seeInTitle('Page');
+        $I->see('first Page', 'li a');
+        $I->see('second Page', 'li a');
+        $I->click('first Page');
+        $I->seeInTitle('first Page');
     }
 
     /**
      * @param AcceptanceTester $I
      *
      * first language has no language fallback defined in site configuration
-     * page is translated into first language
-     * expectation: page is displayed in first language
+     * home page is translated into first language
+     * expectation:
+     * * home page is displayed in first language
+     * * first page menu entry is displayed in first language
+     * * second page menu entry is displayed in first language
      *
      */
     public function homePageIsRenderedInFirstLanguageWherePageTranslationExists(AcceptanceTester $I)
     {
         $I->amOnPage('/scenario-3/de/');
         $I->seeInTitle('Deutsch Scenario 3');
-        $I->see('Seite', 'li a');
-        $I->click('Seite');
-        $I->seeInTitle('Seite');
+        $I->see('erste Seite', 'li a');
+        $I->see('zweite Seite', 'li a');
+        $I->click('erste Seite');
+        $I->seeInTitle('erste Seite');
     }
 
     /**
@@ -57,34 +62,21 @@ class Scenario3Cest
      *
      * second language has fallback chain defined in site configuration as follows
      * * only step is first language
-     * page is translated into first language
-     * page is not translated into second language
-     * page has l18n_cfg=2 set
-     * expectation: request returns a 404 status cpde
+     * home page is translated into first language
+     * home page is translated into second language
+     * first page in menu has l18n_cfg=2 set and is not translated into second language
+     * second page in menu has l18n_cfg = 0 set and is translated into second language
+     * expectation:
+     * * home page is displayed in second language
+     * * first page menu entry is not present
+     * * second page menu entry is displayed in second language
      */
     public function homePageIsRenderedInSecondLanguageWherePageTranslationDoesNotExist(AcceptanceTester $I)
     {
         $I->amOnPage('/scenario-3/de-ch/');
-        $I->seeInTitle('TYPO3 Exception');
-        $I->see('(1/1) #1518472189 TYPO3\CMS\Core\Error\Http\PageNotFoundException');
-    }
-
-    /**
-     * @param AcceptanceTester $I
-     *
-     * second language has fallback chain defined in site configuration as follows
-     * * only step is first language
-     * page is translated into first language
-     * page is translated into second language
-     * page in menu has l18n_cfg=2 set and is not translated into second language
-     * expectation: page in menu with l18n_cfg=2 set does not appear in menu
-     */
-    public function subPageIsRenderedInSecondLanguageWherePageTranslationExistAndNotTranslatedPageIsNotInMenu(AcceptanceTester $I)
-    {
-        $I->amOnPage('/scenario-3/de-ch/seite-2');
-        $I->seeInTitle('Seite 2');
-        $I->dontSee('Page', 'li a');
-        $I->see('Seite 2', 'li a');
-        $I->see('[Translate to Swiss German:] [16] Header', 'h2');
+        $I->seeInTitle('Swiss Scenario 3');
+        $I->dontSee('first page', 'li a');
+        $I->dontSee('erste Seite', 'li a');
+        $I->see('swiss second Seite', 'li a');
     }
 }
