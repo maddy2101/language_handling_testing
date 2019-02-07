@@ -29,20 +29,11 @@ return [
         'install' => [
             'packagePath' => 'typo3/sysext/install/',
         ],
-        'info' => [
-            'packagePath' => 'typo3/sysext/info/',
-        ],
-        'linkvalidator' => [
-            'packagePath' => 'typo3/sysext/linkvalidator/',
-        ],
         'recordlist' => [
             'packagePath' => 'typo3/sysext/recordlist/',
         ],
         'backend' => [
             'packagePath' => 'typo3/sysext/backend/',
-        ],
-        'indexed_search' => [
-            'packagePath' => 'typo3/sysext/indexed_search/',
         ],
         'recycler' => [
             'packagePath' => 'typo3/sysext/recycler/',
@@ -56,32 +47,14 @@ return [
         'rte_ckeditor' => [
             'packagePath' => 'typo3/sysext/rte_ckeditor/',
         ],
-        'taskcenter' => [
-            'packagePath' => 'typo3/sysext/taskcenter/',
-        ],
-        'sys_action' => [
-            'packagePath' => 'typo3/sysext/sys_action/',
-        ],
         'about' => [
             'packagePath' => 'typo3/sysext/about/',
-        ],
-        'adminpanel' => [
-            'packagePath' => 'typo3/sysext/adminpanel/',
-        ],
-        'belog' => [
-            'packagePath' => 'typo3/sysext/belog/',
         ],
         'beuser' => [
             'packagePath' => 'typo3/sysext/beuser/',
         ],
         'extensionmanager' => [
             'packagePath' => 'typo3/sysext/extensionmanager/',
-        ],
-        'feedit' => [
-            'packagePath' => 'typo3/sysext/feedit/',
-        ],
-        'felogin' => [
-            'packagePath' => 'typo3/sysext/felogin/',
         ],
         'filelist' => [
             'packagePath' => 'typo3/sysext/filelist/',
@@ -95,20 +68,17 @@ return [
         'impexp' => [
             'packagePath' => 'typo3/sysext/impexp/',
         ],
+        'info' => [
+            'packagePath' => 'typo3/sysext/info/',
+        ],
         'lowlevel' => [
             'packagePath' => 'typo3/sysext/lowlevel/',
-        ],
-        'opendocs' => [
-            'packagePath' => 'typo3/sysext/opendocs/',
         ],
         'redirects' => [
             'packagePath' => 'typo3/sysext/redirects/',
         ],
         'seo' => [
             'packagePath' => 'typo3/sysext/seo/',
-        ],
-        'sys_note' => [
-            'packagePath' => 'typo3/sysext/sys_note/',
         ],
         't3editor' => [
             'packagePath' => 'typo3/sysext/t3editor/',
