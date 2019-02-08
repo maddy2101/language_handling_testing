@@ -1,0 +1,41 @@
+diff --git a/typo3/sysext/core/Classes/Context/LanguageAspectFactory.php b/typo3/sysext/core/Classes/Context/LanguageAspectFactory.php
+index 0d6c5a9..cd39716 100644
+--- a/typo3/sysext/core/Classes/Context/LanguageAspectFactory.php
++++ b/typo3/sysext/core/Classes/Context/LanguageAspectFactory.php
+@@ -60,7 +60,7 @@
+             case 'content_fallback':
+                 if (!empty($fallbackOrder)) {
+                     $fallBackOrder = GeneralUtility::trimExplode(',', $fallbackOrder);
+-                    // no strict typing explictly done here
++                    // no strict typing explicitly done here
+                     if (!in_array(0, $fallBackOrder) && !in_array('pageNotFound', $fallBackOrder)) {
+                         $fallBackOrder[] = 'pageNotFound';
+                     }
+@@ -94,7 +94,7 @@
+     }
+
+     /**
+-     * Site Languages always run with overlays + floating records.
++     * Site Languages always run in floating mode
+      *
+      * @param SiteLanguage $language
+      * @return LanguageAspect
+@@ -103,15 +103,16 @@
+     {
+         $languageId = $language->getLanguageId();
+         $fallbackType = $language->getFallbackType();
++        $overlayType = LanguageAspect::OVERLAYS_ON_WITH_FLOATING;
+         if ($fallbackType === 'fallback') {
+             $fallbackOrder = $language->getFallbackLanguageIds();
+             $fallbackOrder[] = 'pageNotFound';
++            $overlayType = LanguageAspect::OVERLAYS_MIXED;
+         } elseif ($fallbackType === 'strict') {
+             $fallbackOrder = [];
+         } else {
+             $fallbackOrder = [0];
+         }
+-
+-        return GeneralUtility::makeInstance(LanguageAspect::class, $languageId, $languageId, LanguageAspect::OVERLAYS_ON_WITH_FLOATING, $fallbackOrder);
++        return GeneralUtility::makeInstance(LanguageAspect::class, $languageId, $languageId, $overlayType, $fallbackOrder);
+     }
+ }

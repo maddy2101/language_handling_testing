@@ -4,6 +4,7 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "php": "^7.2",
+        "cweagans/composer-patches": "^1.6",
         "t3g/ddev-utilities": "^0.1.2",
         "typo3/cms-about": "9.5.x-dev",
         "typo3/cms-backend": "9.5.x-dev",
@@ -45,6 +46,14 @@
         "preferred-install": {
             "typo3/*": "source",
             "*": "dist"
+        }
+    },
+    "extra": {
+        "enable-patching": true,
+        "patches":{
+            "typo3/cms-core": {
+                "[BUGFIX] Fix content fallback with site configuration": "Build/Patches/383ba3e.diff"
+            }
         }
     }
 }
