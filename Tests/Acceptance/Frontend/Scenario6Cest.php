@@ -105,8 +105,8 @@ class Scenario6Cest
      * * first step is first language
      * * second step is default language
      *
-     * home page is translated into first language
-     * home page is translated into second language
+     * home page is not translated into first page
+     * home page is not translated into second page
      * first page in menu has l18n_cfg=3 set and is not translated into second language
      * second page in menu has l18n_cfg = 3 set and is translated into second language
      * expectation: first page in menu with l18n_cfg=3 set does not appear in menu
