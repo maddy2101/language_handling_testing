@@ -74,6 +74,7 @@ class Scenario4Cest
         $I->amOnPage('/scenario-4/de-ch/');
         $I->seeInTitle('TYPO3 Exception');
         $I->see('(1/1) #1518472189 TYPO3\CMS\Core\Error\Http\PageNotFoundException');
+        $I->see('Page is not available in the requested language.');
     }
 
     /**
