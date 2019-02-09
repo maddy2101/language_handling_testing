@@ -50,9 +50,13 @@
     },
     "extra": {
         "enable-patching": true,
-        "patches":{
+        "patches": {
             "typo3/cms-core": {
-                "[BUGFIX] Fix content fallback with site configuration": "Build/Patches/383ba3e.diff"
+                "[BUGFIX] Fix content fallback with site configuration": "Build/Patches/383ba3e.diff",
+                "[POC][BUGFIX] Fix fallback language handling": "Build/Patches/050d291-core.diff"
+            },
+            "typo3/cms-frontend": {
+                "[POC][BUGFIX] Fix fallback language handling": "Build/Patches/050d291-frontend.diff"
             }
         }
     }

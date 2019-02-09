@@ -1,0 +1,38 @@
+From 050d2913f4bcd74e3d4dc4c4ac340538b907f797 Mon Sep 17 00:00:00 2001
+From: Andreas Fernandez <a.fernandez@scripting-base.de>
+Date: Sat, 09 Feb 2019 18:20:56 +0100
+Subject: [PATCH] [POC][BUGFIX] Fix fallback language handling
+
+This is an early approach to fix fallback language handlings in terms of:
+
+- Resolve correct page
+- Metadata of page (e.g. page title)
+- Links in menu
+
+Resolves: #XXXXX
+Releases: master, 9.5
+Change-Id: Ic2b302989449ec14e7e6b5c54819870770655da9
+---
+
+diff --git a/typo3/sysext/core/Classes/Routing/PageRouter.php b/typo3/sysext/core/Classes/Routing/PageRouter.php
+index f6e0a9f..28c8b47 100644
+--- a/typo3/sysext/core/Classes/Routing/PageRouter.php
++++ b/typo3/sysext/core/Classes/Routing/PageRouter.php
+@@ -115,8 +115,16 @@
+     {
+         $urlPath = $previousResult->getTail();
+         $slugCandidates = $this->getCandidateSlugsFromRoutePath($urlPath ?: '/');
++        $pageCandidates = [];
+         $language = $previousResult->getLanguage();
+-        $pageCandidates = $this->getPagesFromDatabaseForCandidates($slugCandidates, $language->getLanguageId());
++        $languages = array_merge([$language->getLanguageId()], $language->getFallbackLanguageIds());
++        foreach ($languages as $languageId) {
++            $pageCandidates = $this->getPagesFromDatabaseForCandidates($slugCandidates, $languageId);
++            if (!empty($pageCandidates)) {
++                break;
++            }
++        }
++
+         // Stop if there are no candidates
+         if (empty($pageCandidates)) {
+             throw new RouteNotFoundException('No page candidates found for path "' . $urlPath . '"', 1538389999);

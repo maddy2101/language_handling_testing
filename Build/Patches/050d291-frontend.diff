@@ -1,0 +1,67 @@
+From 050d2913f4bcd74e3d4dc4c4ac340538b907f797 Mon Sep 17 00:00:00 2001
+From: Andreas Fernandez <a.fernandez@scripting-base.de>
+Date: Sat, 09 Feb 2019 18:20:56 +0100
+Subject: [PATCH] [POC][BUGFIX] Fix fallback language handling
+
+This is an early approach to fix fallback language handlings in terms of:
+
+- Resolve correct page
+- Metadata of page (e.g. page title)
+- Links in menu
+
+Resolves: #XXXXX
+Releases: master, 9.5
+Change-Id: Ic2b302989449ec14e7e6b5c54819870770655da9
+---
+
+diff --git a/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php b/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php
+index 3d6da97..5416469 100644
+--- a/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php
++++ b/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php
+@@ -2088,7 +2088,7 @@
+     protected function menuTypoLink($page, $oTarget, $no_cache, $script, $overrideArray = '', $addParams = '', $typeOverride = '')
+     {
+         $conf = [
+-            'parameter' => is_array($overrideArray) && $overrideArray['uid'] ? $overrideArray['uid'] : $page['uid']
++            'parameter' => is_array($overrideArray) && $overrideArray['uid'] ? $overrideArray['uid'] : (!empty($page['_PAGES_OVERLAY_UID']) ? $page['_PAGES_OVERLAY_UID'] : $page['uid'])
+         ];
+         if (MathUtility::canBeInterpretedAsInteger($typeOverride)) {
+             $conf['parameter'] .= ',' . (int)$typeOverride;
+diff --git a/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php b/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php
+index ca097ac..b90d83a 100644
+--- a/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php
++++ b/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php
+@@ -2021,11 +2021,11 @@
+                         // value was found.
+                         foreach ($languageAspect->getFallbackChain() ?? [] as $orderValue) {
+                             if ($orderValue === '0' || $orderValue === 0 || $orderValue === '') {
+-                                $languageContentId = 0;
++                                $languageId = $languageContentId = 0;
+                                 break;
+                             }
+                             if (MathUtility::canBeInterpretedAsInteger($orderValue) && !empty($this->sys_page->getPageOverlay($this->id, (int)$orderValue))) {
+-                                $languageContentId = (int)$orderValue;
++                                $languageId = $languageContentId = (int)$orderValue;
+                                 break;
+                             }
+                             if ($orderValue === 'pageNotFound') {
+@@ -2048,9 +2048,6 @@
+                         // Default is that everything defaults to the default language...
+                         $languageId = ($languageContentId = 0);
+                 }
+-            } else {
+-                // Setting sys_language if an overlay record was found (which it is only if a language is used)
+-                $this->page = $this->sys_page->getPageOverlay($this->page, $languageAspect->getId());
+             }
+ 
+             // Define the language aspect again now
+@@ -2061,6 +2058,9 @@
+                 $languageAspect->getOverlayType(),
+                 $languageAspect->getFallbackChain()
+             );
++
++            // Setting sys_language if an overlay record was found (which it is only if a language is used)
++            $this->page = $this->sys_page->getPageOverlay($this->page, $languageAspect->getId());
+         }
+ 
+         // Set the language aspect
