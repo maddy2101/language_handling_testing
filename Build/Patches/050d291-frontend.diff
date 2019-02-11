@@ -14,11 +14,11 @@ Releases: master, 9.5
 Change-Id: Ic2b302989449ec14e7e6b5c54819870770655da9
 ---
 
-diff --git a/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php b/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php
-index 3d6da97..5416469 100644
---- a/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php
-+++ b/typo3/sysext/frontend/Classes/ContentObject/Menu/AbstractMenuContentObject.php
-@@ -2088,7 +2088,7 @@
+diff --git a/Classes/ContentObject/Menu/AbstractMenuContentObject.php b/Classes/ContentObject/Menu/AbstractMenuContentObject.php
+index 63973247..cc658923 100644
+--- a/Classes/ContentObject/Menu/AbstractMenuContentObject.php
++++ b/Classes/ContentObject/Menu/AbstractMenuContentObject.php
+@@ -2214,7 +2214,7 @@ abstract class AbstractMenuContentObject
      protected function menuTypoLink($page, $oTarget, $no_cache, $script, $overrideArray = '', $addParams = '', $typeOverride = '')
      {
          $conf = [
@@ -27,11 +27,11 @@ index 3d6da97..5416469 100644
          ];
          if (MathUtility::canBeInterpretedAsInteger($typeOverride)) {
              $conf['parameter'] .= ',' . (int)$typeOverride;
-diff --git a/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php b/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php
-index ca097ac..b90d83a 100644
---- a/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php
-+++ b/typo3/sysext/frontend/Classes/Controller/TypoScriptFrontendController.php
-@@ -2021,11 +2021,11 @@
+diff --git a/Classes/Controller/TypoScriptFrontendController.php b/Classes/Controller/TypoScriptFrontendController.php
+index e9cdb528..7bbaa50d 100644
+--- a/Classes/Controller/TypoScriptFrontendController.php
++++ b/Classes/Controller/TypoScriptFrontendController.php
+@@ -2763,11 +2763,11 @@ class TypoScriptFrontendController implements LoggerAwareInterface
                          // value was found.
                          foreach ($languageAspect->getFallbackChain() ?? [] as $orderValue) {
                              if ($orderValue === '0' || $orderValue === 0 || $orderValue === '') {
@@ -45,7 +45,7 @@ index ca097ac..b90d83a 100644
                                  break;
                              }
                              if ($orderValue === 'pageNotFound') {
-@@ -2048,9 +2048,6 @@
+@@ -2790,9 +2790,6 @@ class TypoScriptFrontendController implements LoggerAwareInterface
                          // Default is that everything defaults to the default language...
                          $languageId = ($languageContentId = 0);
                  }
@@ -53,9 +53,9 @@ index ca097ac..b90d83a 100644
 -                // Setting sys_language if an overlay record was found (which it is only if a language is used)
 -                $this->page = $this->sys_page->getPageOverlay($this->page, $languageAspect->getId());
              }
- 
+
              // Define the language aspect again now
-@@ -2061,6 +2058,9 @@
+@@ -2803,6 +2800,9 @@ class TypoScriptFrontendController implements LoggerAwareInterface
                  $languageAspect->getOverlayType(),
                  $languageAspect->getFallbackChain()
              );
@@ -63,5 +63,90 @@ index ca097ac..b90d83a 100644
 +            // Setting sys_language if an overlay record was found (which it is only if a language is used)
 +            $this->page = $this->sys_page->getPageOverlay($this->page, $languageAspect->getId());
          }
- 
+
          // Set the language aspect
+diff --git a/Classes/Page/PageRepository.php b/Classes/Page/PageRepository.php
+index e2f36b3d..d603dfc5 100644
+--- a/Classes/Page/PageRepository.php
++++ b/Classes/Page/PageRepository.php
+@@ -556,6 +556,9 @@ class PageRepository implements LoggerAwareInterface
+         unset($origPage);
+         // If language UID is different from zero, do overlay:
+         if ($languageUid) {
++            $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
++            $languageUids = array_merge([$languageUid], $languageAspect->getFallbackChain());
++
+             $page_ids = [];
+
+             $origPage = reset($pagesInput);
+@@ -575,36 +578,42 @@ class PageRepository implements LoggerAwareInterface
+             // However you may argue that the showHiddenField flag should
+             // determine this. But that's not how it's done right now.
+             // Selecting overlay record:
+-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+-                ->getQueryBuilderForTable('pages');
+-            $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+-            $result = $queryBuilder->select('*')
+-                ->from('pages')
+-                ->where(
+-                    $queryBuilder->expr()->in(
+-                        $GLOBALS['TCA']['pages']['ctrl']['transOrigPointerField'],
+-                        $queryBuilder->createNamedParameter($page_ids, Connection::PARAM_INT_ARRAY)
+-                    ),
+-                    $queryBuilder->expr()->eq(
+-                        $GLOBALS['TCA']['pages']['ctrl']['languageField'],
+-                        $queryBuilder->createNamedParameter($languageUid, \PDO::PARAM_INT)
++            foreach ($languageUids as $fallbackLanguageId) {
++                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
++                    ->getQueryBuilderForTable('pages');
++                $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
++                $result = $queryBuilder->select('*')
++                    ->from('pages')
++                    ->where(
++                        $queryBuilder->expr()->in(
++                            $GLOBALS['TCA']['pages']['ctrl']['transOrigPointerField'],
++                            $queryBuilder->createNamedParameter($page_ids, Connection::PARAM_INT_ARRAY)
++                        ),
++                        $queryBuilder->expr()->eq(
++                            $GLOBALS['TCA']['pages']['ctrl']['languageField'],
++                            $queryBuilder->createNamedParameter($languageUid, \PDO::PARAM_INT)
++                        )
+                     )
+-                )
+-                ->execute();
++                    ->execute();
++
++                $overlays = [];
++                while ($row = $result->fetch()) {
++                    $this->versionOL('pages', $row);
++                    if (is_array($row)) {
++                        $row['_PAGES_OVERLAY'] = true;
++                        $row['_PAGES_OVERLAY_UID'] = $row['uid'];
++                        $row['_PAGES_OVERLAY_LANGUAGE'] = $languageUid;
++                        $origUid = $row[$GLOBALS['TCA']['pages']['ctrl']['transOrigPointerField']];
++                        // Unset vital fields that are NOT allowed to be overlaid:
++                        unset($row['uid']);
++                        unset($row['pid']);
++                        unset($row['alias']);
++                        $overlays[$origUid] = $row;
++                    }
++                }
+
+-            $overlays = [];
+-            while ($row = $result->fetch()) {
+-                $this->versionOL('pages', $row);
+-                if (is_array($row)) {
+-                    $row['_PAGES_OVERLAY'] = true;
+-                    $row['_PAGES_OVERLAY_UID'] = $row['uid'];
+-                    $row['_PAGES_OVERLAY_LANGUAGE'] = $languageUid;
+-                    $origUid = $row[$GLOBALS['TCA']['pages']['ctrl']['transOrigPointerField']];
+-                    // Unset vital fields that are NOT allowed to be overlaid:
+-                    unset($row['uid']);
+-                    unset($row['pid']);
+-                    unset($row['alias']);
+-                    $overlays[$origUid] = $row;
++                if ($overlays === []) {
++                    break;
+                 }
+             }
+         }

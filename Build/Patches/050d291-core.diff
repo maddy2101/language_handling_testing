@@ -1,4 +1,4 @@
-From 050d2913f4bcd74e3d4dc4c4ac340538b907f797 Mon Sep 17 00:00:00 2001
+From a5b04878934ade27a52785c12a17dda8d7862eba Mon Sep 17 00:00:00 2001
 From: Andreas Fernandez <a.fernandez@scripting-base.de>
 Date: Sat, 09 Feb 2019 18:20:56 +0100
 Subject: [PATCH] [POC][BUGFIX] Fix fallback language handling
@@ -15,7 +15,7 @@ Change-Id: Ic2b302989449ec14e7e6b5c54819870770655da9
 ---
 
 diff --git a/typo3/sysext/core/Classes/Routing/PageRouter.php b/typo3/sysext/core/Classes/Routing/PageRouter.php
-index f6e0a9f..28c8b47 100644
+index f6e0a9f..b586614 100644
 --- a/typo3/sysext/core/Classes/Routing/PageRouter.php
 +++ b/typo3/sysext/core/Classes/Routing/PageRouter.php
 @@ -115,8 +115,16 @@
@@ -36,3 +36,41 @@ index f6e0a9f..28c8b47 100644
          // Stop if there are no candidates
          if (empty($pageCandidates)) {
              throw new RouteNotFoundException('No page candidates found for path "' . $urlPath . '"', 1538389999);
+@@ -451,7 +459,8 @@
+             $candidatePathParts[] = $prefix;
+             array_pop($pathParts);
+         }
+-        $candidatePathParts[] = '/';
++        // TODO: Adding "/" to the candidates breaks language fallback handling, need to investigate
++        // $candidatePathParts[] = '/';
+         return $candidatePathParts;
+     }
+
+diff --git a/typo3/sysext/core/Classes/Site/Entity/SiteLanguage.php b/typo3/sysext/core/Classes/Site/Entity/SiteLanguage.php
+index 033596a..b4cb78b 100644
+--- a/typo3/sysext/core/Classes/Site/Entity/SiteLanguage.php
++++ b/typo3/sysext/core/Classes/Site/Entity/SiteLanguage.php
+@@ -150,15 +150,16 @@
+         }
+         if (!empty($configuration['fallbackType'])) {
+             $this->fallbackType = $configuration['fallbackType'];
+-        }
+-        if (isset($configuration['fallbacks'])) {
+-            $fallbackLanguageIds = $configuration['fallbacks'];
+
+-            if (is_string($fallbackLanguageIds)) {
+-                $fallbackLanguageIds = explode(',', $fallbackLanguageIds);
++            if ($configuration['fallbackType'] === 'fallback' && isset($configuration['fallbacks'])) {
++                $fallbackLanguageIds = $configuration['fallbacks'];
++
++                if (is_string($fallbackLanguageIds)) {
++                    $fallbackLanguageIds = explode(',', $fallbackLanguageIds);
++                }
++
++                $this->fallbackLanguageIds = array_map('intval', $fallbackLanguageIds);
+             }
+-
+-            $this->fallbackLanguageIds = array_map('intval', $fallbackLanguageIds);
+         }
+         if (isset($configuration['enabled'])) {
+             $this->enabled = (bool)$configuration['enabled'];
