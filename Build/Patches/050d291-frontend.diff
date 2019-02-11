@@ -1,19 +1,3 @@
-From 050d2913f4bcd74e3d4dc4c4ac340538b907f797 Mon Sep 17 00:00:00 2001
-From: Andreas Fernandez <a.fernandez@scripting-base.de>
-Date: Sat, 09 Feb 2019 18:20:56 +0100
-Subject: [PATCH] [POC][BUGFIX] Fix fallback language handling
-
-This is an early approach to fix fallback language handlings in terms of:
-
-- Resolve correct page
-- Metadata of page (e.g. page title)
-- Links in menu
-
-Resolves: #XXXXX
-Releases: master, 9.5
-Change-Id: Ic2b302989449ec14e7e6b5c54819870770655da9
----
-
 diff --git a/Classes/ContentObject/Menu/AbstractMenuContentObject.php b/Classes/ContentObject/Menu/AbstractMenuContentObject.php
 index 63973247..cc658923 100644
 --- a/Classes/ContentObject/Menu/AbstractMenuContentObject.php
@@ -28,23 +12,9 @@ index 63973247..cc658923 100644
          if (MathUtility::canBeInterpretedAsInteger($typeOverride)) {
              $conf['parameter'] .= ',' . (int)$typeOverride;
 diff --git a/Classes/Controller/TypoScriptFrontendController.php b/Classes/Controller/TypoScriptFrontendController.php
-index e9cdb528..7bbaa50d 100644
+index e9cdb528..e84a3113 100644
 --- a/Classes/Controller/TypoScriptFrontendController.php
 +++ b/Classes/Controller/TypoScriptFrontendController.php
-@@ -2763,11 +2763,11 @@ class TypoScriptFrontendController implements LoggerAwareInterface
-                         // value was found.
-                         foreach ($languageAspect->getFallbackChain() ?? [] as $orderValue) {
-                             if ($orderValue === '0' || $orderValue === 0 || $orderValue === '') {
--                                $languageContentId = 0;
-+                                $languageId = $languageContentId = 0;
-                                 break;
-                             }
-                             if (MathUtility::canBeInterpretedAsInteger($orderValue) && !empty($this->sys_page->getPageOverlay($this->id, (int)$orderValue))) {
--                                $languageContentId = (int)$orderValue;
-+                                $languageId = $languageContentId = (int)$orderValue;
-                                 break;
-                             }
-                             if ($orderValue === 'pageNotFound') {
 @@ -2790,9 +2790,6 @@ class TypoScriptFrontendController implements LoggerAwareInterface
                          // Default is that everything defaults to the default language...
                          $languageId = ($languageContentId = 0);
@@ -53,7 +23,7 @@ index e9cdb528..7bbaa50d 100644
 -                // Setting sys_language if an overlay record was found (which it is only if a language is used)
 -                $this->page = $this->sys_page->getPageOverlay($this->page, $languageAspect->getId());
              }
-
+ 
              // Define the language aspect again now
 @@ -2803,6 +2800,9 @@ class TypoScriptFrontendController implements LoggerAwareInterface
                  $languageAspect->getOverlayType(),
@@ -61,25 +31,35 @@ index e9cdb528..7bbaa50d 100644
              );
 +
 +            // Setting sys_language if an overlay record was found (which it is only if a language is used)
-+            $this->page = $this->sys_page->getPageOverlay($this->page, $languageAspect->getId());
++            $this->page = $this->sys_page->getPageOverlay($this->page, $languageAspect->getContentId());
          }
-
+ 
          // Set the language aspect
 diff --git a/Classes/Page/PageRepository.php b/Classes/Page/PageRepository.php
-index e2f36b3d..d603dfc5 100644
+index e2f36b3d..ae354fad 100644
 --- a/Classes/Page/PageRepository.php
 +++ b/Classes/Page/PageRepository.php
-@@ -556,6 +556,9 @@ class PageRepository implements LoggerAwareInterface
+@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
+ use TYPO3\CMS\Core\Resource\FileRepository;
+ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+ use TYPO3\CMS\Core\Utility\GeneralUtility;
++use TYPO3\CMS\Core\Utility\MathUtility;
+ use TYPO3\CMS\Core\Utility\RootlineUtility;
+ use TYPO3\CMS\Core\Versioning\VersionState;
+ 
+@@ -556,6 +557,11 @@ class PageRepository implements LoggerAwareInterface
          unset($origPage);
          // If language UID is different from zero, do overlay:
          if ($languageUid) {
 +            $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
-+            $languageUids = array_merge([$languageUid], $languageAspect->getFallbackChain());
++            $languageUids = array_unique(array_filter(array_merge([$languageUid], $languageAspect->getFallbackChain()), function ($item) {
++                return MathUtility::canBeInterpretedAsInteger($item);
++            }));
 +
              $page_ids = [];
-
+ 
              $origPage = reset($pagesInput);
-@@ -575,36 +578,42 @@ class PageRepository implements LoggerAwareInterface
+@@ -575,36 +581,40 @@ class PageRepository implements LoggerAwareInterface
              // However you may argue that the showHiddenField flag should
              // determine this. But that's not how it's done right now.
              // Selecting overlay record:
@@ -109,7 +89,7 @@ index e2f36b3d..d603dfc5 100644
 +                        ),
 +                        $queryBuilder->expr()->eq(
 +                            $GLOBALS['TCA']['pages']['ctrl']['languageField'],
-+                            $queryBuilder->createNamedParameter($languageUid, \PDO::PARAM_INT)
++                            $queryBuilder->createNamedParameter($fallbackLanguageId, \PDO::PARAM_INT)
 +                        )
                      )
 -                )
@@ -122,16 +102,14 @@ index e2f36b3d..d603dfc5 100644
 +                    if (is_array($row)) {
 +                        $row['_PAGES_OVERLAY'] = true;
 +                        $row['_PAGES_OVERLAY_UID'] = $row['uid'];
-+                        $row['_PAGES_OVERLAY_LANGUAGE'] = $languageUid;
++                        $row['_PAGES_OVERLAY_LANGUAGE'] = $fallbackLanguageId;
 +                        $origUid = $row[$GLOBALS['TCA']['pages']['ctrl']['transOrigPointerField']];
 +                        // Unset vital fields that are NOT allowed to be overlaid:
-+                        unset($row['uid']);
-+                        unset($row['pid']);
-+                        unset($row['alias']);
++                        unset($row['uid'],$row['pid'], $row['alias']);
 +                        $overlays[$origUid] = $row;
 +                    }
 +                }
-
+ 
 -            $overlays = [];
 -            while ($row = $result->fetch()) {
 -                $this->versionOL('pages', $row);
@@ -145,7 +123,7 @@ index e2f36b3d..d603dfc5 100644
 -                    unset($row['pid']);
 -                    unset($row['alias']);
 -                    $overlays[$origUid] = $row;
-+                if ($overlays === []) {
++                if ($overlays !== []) {
 +                    break;
                  }
              }
