@@ -32,12 +32,12 @@ class Scenario4Cest
     {
         $I->amOnPage('/scenario-4/en/');
         $I->seeInTitle('Scenario 4');
-        $I->see('first Page', 'li a');
-        $I->see('second Page', 'li a');
+        $I->see('first Page', 'li a[href]');
+        $I->see('second Page', 'li a[href]');
         $I->click('first Page');
         $I->seeInTitle('first Page');
-        $I->see('first Page', 'li a');
-        $I->see('second Page', 'li a');
+        $I->see('first Page', 'li a[href]');
+        $I->see('second Page', 'li a[href]');
     }
 
     /**
@@ -92,7 +92,7 @@ class Scenario4Cest
     {
         $I->amOnPage('/scenario-4/de-ch/second-page');
         $I->seeInTitle('second Page');
-        $I->dontSee('first Page', 'li a');
-        $I->see('second Page', 'li a');
+        $I->dontSee('first Page', 'li a[href]');
+        $I->see('second Page', 'li a[href]');
     }
 }

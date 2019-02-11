@@ -30,7 +30,7 @@ class Scenario2Cest
     {
         $I->amOnPage('/scenario-2/en/');
         $I->seeInTitle('Scenario 2');
-        $I->see('Page', 'li a');
+        $I->see('Page', 'li a[href]');
         $I->click('Page');
         $I->seeInTitle('Page');
     }
@@ -64,7 +64,7 @@ class Scenario2Cest
     {
         $I->amOnPage('/scenario-2/de-ch/');
         $I->seeInTitle('Scenario 2');
-        $I->see('Page', 'li a');
+        $I->see('Page', 'li a[href]');
         $I->click('Page');
         $I->seeInTitle('Page');
     }

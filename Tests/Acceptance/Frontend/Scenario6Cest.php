@@ -72,12 +72,12 @@ class Scenario6Cest
     {
         $I->amOnPage('/scenario-6/de/erste-seite');
         $I->seeInTitle('erste Seite');
-        $I->see('erste Seite', 'li a');
-        $I->see('zweite Seite', 'li a');
+        $I->see('erste Seite', 'li a[href]');
+        $I->see('zweite Seite', 'li a[href]');
         $I->click('zweite Seite');
         $I->seeInTitle('zweite Seite');
-        $I->see('erste Seite', 'li a');
-        $I->see('zweite Seite', 'li a');
+        $I->see('erste Seite', 'li a[href]');
+        $I->see('zweite Seite', 'li a[href]');
     }
 
     /**
@@ -115,8 +115,8 @@ class Scenario6Cest
     {
         $I->amOnPage('/scenario-6/de-ch/swiss-second-seite');
         $I->seeInTitle('swiss second Seite');
-        $I->dontSee('first Page', 'li a');
-        $I->dontSee('erste Seite', 'li a');
-        $I->see('swiss second Seite', 'li a');
+        $I->dontSee('first Page', 'li a[href]');
+        $I->dontSee('erste Seite', 'li a[href]');
+        $I->see('swiss second Seite', 'li a[href]');
     }
 }

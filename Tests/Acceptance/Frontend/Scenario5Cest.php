@@ -53,12 +53,12 @@ class Scenario5Cest
     {
         $I->amOnPage('/scenario-5/de/');
         $I->seeInTitle('Deutsch Scenario 5');
-        $I->dontSee('first Page', 'li a');
-        $I->see('zweite Seite', 'li a');
+        $I->dontSee('first Page', 'li a[href]');
+        $I->see('zweite Seite', 'li a[href]');
         $I->click('zweite Seite');
         $I->seeInTitle('zweite Seite');
-        $I->dontSee('first Page', 'li a');
-        $I->see('zweite Seite', 'li a');
+        $I->dontSee('first Page', 'li a[href]');
+        $I->see('zweite Seite', 'li a[href]');
     }
 
     /**
@@ -81,8 +81,8 @@ class Scenario5Cest
     {
         $I->amOnPage('/scenario-5/de-ch/');
         $I->seeInTitle('Deutsch Scenario 5');
-        $I->dontSee('first Page', 'li a');
-        $I->see('zweite Seite', 'li a');
+        $I->dontSee('first Page', 'li a[href]');
+        $I->see('swiss second Seite', 'li a[href]');
     }
 
     /**
@@ -120,7 +120,7 @@ class Scenario5Cest
     {
         $I->amOnPage('/scenario-5/de-ch/swiss-second-seite');
         $I->seeInTitle('swiss second Seite');
-        $I->dontSee('first Page', 'li a');
-        $I->see('swiss second Seite', 'li a');
+        $I->dontSee('first Page', 'li a[href]');
+        $I->see('swiss second Seite', 'li a[href]');
     }
 }

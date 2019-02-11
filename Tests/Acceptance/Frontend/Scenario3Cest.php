@@ -30,8 +30,8 @@ class Scenario3Cest
     {
         $I->amOnPage('/scenario-3/en/');
         $I->seeInTitle('Scenario 3');
-        $I->see('first Page', 'li a');
-        $I->see('second Page', 'li a');
+        $I->see('first Page', 'li a[href]');
+        $I->see('second Page', 'li a[href]');
         $I->click('first Page');
         $I->seeInTitle('first Page');
     }
@@ -51,8 +51,8 @@ class Scenario3Cest
     {
         $I->amOnPage('/scenario-3/de/');
         $I->seeInTitle('Deutsch Scenario 3');
-        $I->see('erste Seite', 'li a');
-        $I->see('zweite Seite', 'li a');
+        $I->see('erste Seite', 'li a[href]');
+        $I->see('zweite Seite', 'li a[href]');
         $I->click('erste Seite');
         $I->seeInTitle('erste Seite');
     }
@@ -75,8 +75,8 @@ class Scenario3Cest
     {
         $I->amOnPage('/scenario-3/de-ch/');
         $I->seeInTitle('Swiss Scenario 3');
-        $I->dontSee('first page', 'li a');
-        $I->dontSee('erste Seite', 'li a');
-        $I->see('swiss second Seite', 'li a');
+        $I->dontSee('first page', 'li a[href]');
+        $I->dontSee('erste Seite', 'li a[href]');
+        $I->see('swiss second Seite', 'li a[href]');
     }
 }
